@@ -167,7 +167,9 @@ with tab_pull:
             assets = pull_design_assets(st.session_state.canva_token, design_id, asset_dir)
 
         if not assets.get("pdf_path") or not assets.get("png_path"):
-            st.error("Pull failed — check that your Canva token is still valid.")
+            st.error("Pull failed. Real errors below:")
+            for err in assets.get("errors", []):
+                st.code(err)
         else:
             st.session_state.pulled_text = extract_text(assets["pdf_path"])
             st.session_state.pulled_colors = extract_palette(assets["png_path"])
@@ -379,32 +381,36 @@ with tab_quality:
                 duplicates = detect_duplicate_headings(html)
 
                 col1, col2 = st.columns(2)
-                col1.metric("On-brand headings", f"{consistency['on_brand_count']}/{consistency['total']}")
-                col2.metric("Duplicate sections", len(duplicates))
+                _ = col1.metric("On-brand headings", f"{consistency['on_brand_count']}/{consistency['total']}")
+                _ = col2.metric("Duplicate sections", len(duplicates))
 
                 if duplicates:
-                    st.warning("Duplicate sections found:")
+                    _ = st.warning("Duplicate sections found:")
                     for d in duplicates:
-                        st.write(f"- \"{d['text']}\" appears {d['count']} times")
+                        _ = st.write(f"- \"{d['text']}\" appears {d['count']} times")
 
                 passed = not consistency["off_brand"] and not duplicates
-                st.success("Quality gate passed") if passed else st.error("Quality gate failed — review before exporting")
+                if passed:
+                    _ = st.success("Quality gate passed")
+                else:
+                    _ = st.error("Quality gate failed — review before exporting")
 
-                st.divider()
+                _ = st.divider()
+                _ = st.subheader("Export")
                 col1, col2, col3 = st.columns(3)
                 session_id = st.session_state.sessions[doc_type]
                 with col1:
                     if st.button(f"Export .docx", key=f"docx_{doc_type}"):
                         data = export_document(st.session_state.superdocs_key, session_id, "docx")
                         if data:
-                            st.download_button("Download .docx", data, file_name=f"{doc_type}.docx", key=f"dl_docx_{doc_type}")
+                            _ = st.download_button("Download .docx", data, file_name=f"{doc_type}.docx", key=f"dl_docx_{doc_type}")
                 with col2:
                     if st.button(f"Export .pdf", key=f"pdf_{doc_type}"):
                         data = export_document(st.session_state.superdocs_key, session_id, "pdf")
                         if data:
-                            st.download_button("Download .pdf", data, file_name=f"{doc_type}.pdf", key=f"dl_pdf_{doc_type}")
+                            _ = st.download_button("Download .pdf", data, file_name=f"{doc_type}.pdf", key=f"dl_pdf_{doc_type}")
                 with col3:
-                    st.download_button("Download .html", html, file_name=f"{doc_type}.html", key=f"dl_html_{doc_type}")
+                    _ = st.download_button("Download .html", html, file_name=f"{doc_type}.html", key=f"dl_html_{doc_type}")
 
 with tab_sync:
     st.subheader("Check for design updates")
