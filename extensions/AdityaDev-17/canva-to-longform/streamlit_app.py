@@ -15,6 +15,7 @@ paused for review) or its final content (if it didn't).
 import os
 import uuid
 import time
+import difflib
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -30,6 +31,8 @@ from superdocs_pipeline import (
     generate_with_approval_start, poll_job, submit_approval_decision,
     export_document,
 )
+from canva_pipeline import list_designs, pull_design_assets, get_user_info
+from sync_pipeline import check_and_sync
 
 ASSET_ROOT = Path("design_assets")
 DOC_TYPES = ["Leave-behind report", "Brochure", "Long-form article"]
@@ -414,5 +417,37 @@ with tab_quality:
 
 with tab_sync:
     st.subheader("Check for design updates")
-    st.caption("Re-pulls the Canva design and pushes only the changed content, if anything changed.")
-    st.info("Uses the same logic verified in sync_design.py. Run that script directly for now.")
+    st.caption("Re-pulls the Canva design and pushes updates to any already-generated documents, "
+               "if the copy changed since the last check.")
+
+    if not st.session_state.sessions:
+        st.info("Generate at least one document first (Tab 2) before checking for updates.")
+    else:
+        if st.button("Check for updates", type="primary"):
+            with st.spinner("Checking Canva for changes..."):
+                sync_result = check_and_sync(
+                    st.session_state.canva_token,
+                    st.session_state.superdocs_key,
+                    design_id,
+                    st.session_state.sessions,
+                    asset_dir,
+                )
+
+            if sync_result["status"] == "error":
+                st.error(sync_result["message"])
+            elif sync_result["status"] == "baseline_registered":
+                st.info(sync_result["message"])
+            elif sync_result["status"] == "no_changes":
+                st.success(sync_result["message"])
+            elif sync_result["status"] == "changed":
+                st.warning(sync_result["message"])
+                with st.expander("What changed", expanded=True):
+                    diff_lines = list(difflib.unified_diff(
+                        sync_result["old_text"].splitlines(), sync_result["new_text"].splitlines(),
+                        lineterm="", n=0,
+                    ))
+                    for line in diff_lines:
+                        st.text(line)
+                st.subheader("Documents updated")
+                for u in sync_result["updates"]:
+                    st.write(f"**{u['doc_type']}**: {u['ai_response']}")
