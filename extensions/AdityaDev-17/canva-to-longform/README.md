@@ -75,5 +75,24 @@ A lightweight local JSON registry (`design_links.json`) tracks each design's las
 See `BUGS.md` in this folder for the full, detailed list — 12 real issues found and documented during this build, several with root-cause investigation and working fixes.
 
 ---
+## Screenshots
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/259c858d-d596-4612-834b-ca2d5b0707e9" src="URL_1" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/088abcff-d5be-4cc5-9311-60e9973d8ce9" src="URL_2" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/6cf63c2e-90eb-45f6-acfa-593313442cc1" src="URL_3" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/142ad1f5-1bbf-4540-984a-22cadc96d5e3" src="URL_4" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/bbdee804-35b9-4a87-abd7-4de364a7a69f" src="URL_5" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/0c37046d-ec36-471b-a9e0-89a9c7f97420" src="URL_6" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/aed4da09-614b-4c47-a028-9d91ed791543" src="URL_7" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/d44fdc04-9723-46b5-a81b-b966d53ce226" src="URL_8" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/c20a9779-b535-42d9-9e67-739ead71fc87" src="URL_9" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/824e34ba-186d-4791-bd10-56fae5be2c3a" src="URL_10" />
+
+
+
+
+
+
+
+---
 
 Built for the SuperDocs task by Aditya Singh.
